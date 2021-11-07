@@ -5,6 +5,7 @@ import (
 	_ "github.com/golang-migrate/migrate/database"
 	"github.com/sakshamkumar33/hackernews/graph"
 	"github.com/sakshamkumar33/hackernews/graph/generated"
+	"github.com/sakshamkumar33/hackernews/internal/auth"
 	"github.com/sakshamkumar33/hackernews/internal/pkg/db"
 	"log"
 	"net/http"
@@ -25,6 +26,9 @@ func main() {
 		port = defaultPort
 	}
 	router := chi.NewRouter()
+
+	router.Use(auth.Middleware())
+
 	db.InitDB()
 	db.Migrate()
 	server := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: &graph.Resolver{}}))
